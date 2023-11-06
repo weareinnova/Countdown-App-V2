@@ -1,0 +1,23 @@
+modules:
+  jira:dashboardGadget:
+    - key: countdown-app-hello-world-gadget
+      title: Countdown-App
+      description: A hello world dashboard gadget.
+      thumbnail: https://developer.atlassian.com/platform/forge/images/icons/issue-panel-icon.svg
+      resource: main
+      resolver:
+        function: resolver
+      edit:
+        resource: main
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: static/hello-world/build
+permissions:
+  content:
+    styles:
+      - unsafe-inline
+app:
+  id: ari:cloud:ecosystem::app/27139c29-fcd9-4616-a9c0-30c38702fd19
