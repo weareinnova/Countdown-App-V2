@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { view, invoke } from '@forge/bridge';
 
+// Helper function to format remaining time in days, hours, minutes, and seconds
 function formatTime(remainingTime) {
   const days = Math.floor(remainingTime / (60 * 60 * 24));
   const hours = Math.floor((remainingTime % (60 * 60 * 24)) / (60 * 60));
@@ -10,7 +11,9 @@ function formatTime(remainingTime) {
   return `${days} : ${hours} : ${minutes} : ${seconds}`;
 }
 
+// Main functional component for rendering the view
 function View() {
+  // State variables to manage component state
   const [context, setContext] = useState(null);
   const [data, setData] = useState(null);
   const [timeCount, setTimeCount] = useState(0);
@@ -20,7 +23,7 @@ function View() {
   const [error, setError] = useState(null);
   const [update, setUpdate] = useState(null);
 
-
+  // Fetch initial data using the invoke function
   useEffect(() => {
     async function fetchData() {
       try {
@@ -34,6 +37,7 @@ function View() {
     fetchData();
   }, []);
 
+  // Fetch context data using the view.getContext() function
   useEffect(() => {
     async function fetchContext() {
       try {
@@ -47,6 +51,7 @@ function View() {
     fetchContext();
   }, []);
 
+  // Update time count every second using setInterval
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeCount(prevTimeCount => prevTimeCount + 1);
@@ -55,6 +60,7 @@ function View() {
     return () => clearInterval(interval);
   }, []);
 
+  // Parse and set gadget configuration data from context
   useEffect(() => {
     if (context && context.extension && context.extension.gadgetConfiguration) {
       try {
@@ -64,7 +70,7 @@ function View() {
           gadgetConfig = JSON.parse(gadgetConfig);
         }
 
-        const mySuccess =  gadgetConfig.successMessage;
+        const mySuccess = gadgetConfig.successMessage;
         setUpdate(mySuccess);
 
         if (gadgetConfig.date) {
@@ -76,6 +82,7 @@ function View() {
     }
   }, [context]);
 
+  // Countdown to a desired date and update remaining time
   useEffect(() => {
     if (desiredValue) {
       const countdownInterval = setInterval(() => {
@@ -93,12 +100,14 @@ function View() {
     }
   }, [desiredValue]);
 
+  // Styling for the animated text
   const h2Style = {
     fontSize: '32px',
     textAlign: 'center',
     animation: 'pulse 1s infinite', // Apply the animation to the text
   };
 
+  // CSS keyframes animation definition
   const keyframes = `@keyframes pulse {
     0% {
       transform: scale(1);
@@ -111,6 +120,7 @@ function View() {
     }
   }`;
 
+  // Handle errors, loading state, and render the countdown or completion message
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -124,7 +134,7 @@ function View() {
       <style>{keyframes}</style> {/* Inject the CSS keyframes animation */}
       <h3 style={h2Style}>Time Countdown</h3>
       {countdownComplete ? (
-        <h2>Countdown Complete<br></br> {update} </h2>
+        <h2 style={h2Style}> {update} </h2>
       ) : (
         <h3 style={h2Style}>{formatTime(remainingTime)}</h3>
       )}
